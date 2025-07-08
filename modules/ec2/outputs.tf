@@ -11,5 +11,5 @@ output "public_ip" {
 output "private_ip" {
   description = "Private"
   value       = aws_instance.this.private_ip
-  
+
 }

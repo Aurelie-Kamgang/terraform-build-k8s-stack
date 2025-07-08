@@ -18,7 +18,7 @@ resource "aws_s3_bucket_ownership_controls" "this" {
 }
 
 resource "aws_s3_bucket_acl" "this" {
-  bucket = aws_s3_bucket.this.id
-  acl    = "private"
+  bucket     = aws_s3_bucket.this.id
+  acl        = "private"
   depends_on = [aws_s3_bucket_ownership_controls.this]
 }
