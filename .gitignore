@@ -1,0 +1,77 @@
+# Fichiers Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfplan
+.terraform.lock.hcl
+terraform.tfstate.backup
+
+# Fichiers Packer
+packer_cache/
+*.manifest.json
+variables.json
+
+# Fichiers d'environnement et secrets
+.env
+*.env
+secrets.*
+*.pem
+*.pub
+*.key
+*.cer
+*.p12
+*.pkcs12
+*.jks
+*.keystore
+*.truststore
+*.kubeconfig
+*.kubecfg
+
+# Fichiers AWS
+*.aws_credentials
+*.access_key
+*.secret_key
+
+# Fichiers SSH
+*.pem
+*.ppk
+known_hosts
+ssh_config
+
+# Fichiers temporaires et IDE
+*.swp
+*.swo
+*.swn
+*.swo
+*.pyc
+*~
+.DS_Store
+.idea/
+.vscode/
+*.code-workspace
+
+# Fichiers de logs
+*.log
+*.tmp
+*.temp
+
+# Fichiers générés par Kubernetes
+kubeconfig
+admin.conf
+join_command.sh
+
+# Fichiers de lock système
+**/.lock
+**/*.lock
+
+# Fichiers de backup
+*.bak
+*.backup
+
+# Fichiers spécifiques aux scripts
+# scripts/*.sh
+# !scripts/install_*.sh  # Conserve les scripts d'installation
+
+# Fichiers de cache
+.cache/
