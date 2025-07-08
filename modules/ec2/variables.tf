@@ -3,6 +3,32 @@ variable "ami_id" {
   type        = string
 }
 
+variable "instance_role" {
+  description = "Role de l'instance (msr ou wrk)"
+  type        = string
+  validation {
+    condition     = contains(["msr", "wrk"], var.instance_role)
+    error_message = "Le rôle doit être 'msr' (master) ou 'wrk' (worker)."
+  }
+}
+
+variable "pod_cidr" {
+  description = "CIDR pour le réseau Pod"
+  type        = string
+  default     = "192.168.0.0/16"
+}
+
+variable "master_private_ip" {
+  description = "IP privée du master (pour les workers)"
+  type        = string
+  default     = ""
+}
+
+variable "ssh_private_key_path" {
+  description = "Chemin vers la clé SSH pour provisionnement"
+  type        = string
+}
+
 variable "instance_type" {
   description = "Instance type for EC2 instances"
   type        = string
@@ -23,39 +49,9 @@ variable "security_group_ids" {
   type        = list(string)
 }
 
-variable "bucket_name" {
-  description = "Name of the S3 bucket"
-  type        = string
-}
-
-variable "access_key" {
-  description = "AWS access key"
-  type        = string
-}
-
-variable "secret_key" {
-  description = "AWS secret key"
-  type        = string
-}
-
-variable "region" {
-  description = "AWS region"
-  type        = string
-}
-
-variable "instance_role" {
-  description = "Role of the instance (master or worker)"
-  type        = string
-  default     = "worker"
-}
-
 variable "worker_number" {
   description = "Worker number for naming"
   type        = number
   default     = 1
 }
 
-variable "script_path" {
-  description = "Path to the user data script"
-  type        = string
-}

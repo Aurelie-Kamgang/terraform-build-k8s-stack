@@ -8,10 +8,6 @@ output "subnet_id" {
   value       = module.vpc.subnet_id
 }
 
-output "s3_bucket_name" {
-  description = "Name of the created S3 bucket"
-  value       = module.s3.bucket_name
-}
 
 output "master_instance_id" {
   description = "ID of the master instance"

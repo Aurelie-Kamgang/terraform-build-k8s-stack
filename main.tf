@@ -27,6 +27,9 @@ data "aws_ami" "ubuntu_20_04" {
 
 locals {
     ami_id = data.aws_ami.ubuntu_20_04.id
+    private_key_path = "${path.module}/keys/${var.ami_key_pair_name}.pem"
+    key_name = var.ami_key_pair_name
+    
 }
 
 module "vpc" {
@@ -41,45 +44,39 @@ module "security_group" {
   vpc_id  = module.vpc.vpc_id
   sg_name = "K8S Ports"
 }
-
-module "s3" {
-  source       = "./modules/s3"
-  bucket_prefix = "k8s-"
+module "keypair" {
+    source = "./modules/keypair"
+    key_name = local.key_name
+    key_path = local.private_key_path
+  
 }
 
+# Main configuration for the Kubernetes cluster
 module "master" {
-  source              = "./modules/ec2"
-  ami_id             = local.ami_id
-  instance_type      = var.instance_type
-  key_name           = var.ami_key_pair_name
-  subnet_id          = module.vpc.subnet_id
-  security_group_ids = [module.security_group.security_group_id]
-  bucket_name        = module.s3.bucket_name
-  access_key         = var.access_key
-  secret_key         = var.secret_key
-  region             = var.region
-  instance_role      = "msr"
-  worker_number      = 1
-  script_path        = "scripts/install_k8s_msr.sh"
+  source               = "./modules/ec2"
+  ami_id              = data.aws_ami.ubuntu_20_04.id
+  instance_type       = "t3.medium"
+  instance_role       = "msr"
+  subnet_id           = module.vpc.subnet_id
+  security_group_ids  = [module.security_group.security_group_id]
+  pod_cidr            = "192.168.0.0/16"
+  key_name = local.key_name
+  ssh_private_key_path= local.private_key_path
 }
 
 module "workers" {
+  count               = 2
   source              = "./modules/ec2"
-  count               = var.number_of_worker
-  ami_id             = local.ami_id
-  instance_type      = var.instance_type
-  key_name           = var.ami_key_pair_name
-  subnet_id          = module.vpc.subnet_id
-  security_group_ids = [module.security_group.security_group_id]
-  bucket_name        = module.s3.bucket_name
-  access_key         = var.access_key
-  secret_key         = var.secret_key
-  region             = var.region
-  instance_role      = "wrk"
-  worker_number      = count.index + 1
-  script_path        = "scripts/install_k8s_wrk.sh"
-  
-  depends_on = [
+  ami_id              = data.aws_ami.ubuntu_20_04.id
+  key_name = local.key_name
+  instance_type       = "t3.medium"
+  instance_role       = "wrk"
+  worker_number       = count.index + 1
+  subnet_id           = module.vpc.subnet_id
+  security_group_ids  = [module.security_group.security_group_id]
+  master_private_ip   = module.master.private_ip
+  ssh_private_key_path= local.private_key_path
+   depends_on = [
     module.master
   ]
 }
