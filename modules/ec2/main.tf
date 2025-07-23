@@ -51,3 +51,6 @@ data "aws_instance" "master" {
   }
   depends_on = [aws_instance.this]
 }
+locals {
+  join_command = var.instance_role == "msr" ? "" : file("/path/to/join_command.sh")
+}
