@@ -24,11 +24,13 @@ variable "secret_key" {
 variable "instance_type" {
   description = "Instance type for EC2 instances"
   type        = string
+  default = "t2.medium"
 }
 
 variable "ami_key_pair_name" {
   description = "Key pair name for EC2 instances"
   type        = string
+  default = "veo"
 }
 
 variable "number_of_worker" {

@@ -83,6 +83,7 @@ module "workers" {
   security_group_ids  = [module.security_group.security_group_id]
   master_private_ip   = module.master.private_ip
   ssh_private_key_path= local.private_key_path
+  s3_bucket_name     = module.s3.bucket_name
    depends_on = [
     module.master
   ]
