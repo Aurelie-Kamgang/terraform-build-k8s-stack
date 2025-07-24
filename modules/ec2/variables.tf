@@ -55,3 +55,7 @@ variable "worker_number" {
   default     = 1
 }
 
+variable "s3_bucket_name" {
+  type        = string
+  description = "Nom du bucket S3 pour stocker join_command.sh"
+}

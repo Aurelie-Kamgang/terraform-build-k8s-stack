@@ -9,9 +9,8 @@ until nc -z ${master_ip} 6443; do
   sleep 10
 done
 
-# Récupération du join command
-scp -o StrictHostKeyChecking=no ubuntu@${master_ip}:/home/ubuntu/join_command.sh /tmp/
+# Récupération depuis S3
+apt update && apt install -y awscli
+aws s3 cp s3://${s3_bucket_name}/join_command.sh /tmp/join_command.sh
 chmod +x /tmp/join_command.sh
-
-# Join du cluster
 /tmp/join_command.sh

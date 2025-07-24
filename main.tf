@@ -51,6 +51,12 @@ module "keypair" {
   
 }
 
+module "s3" {
+  source         = "./modules/s3"
+  bucket_prefix  = "k8s-"
+}
+
+
 # Main configuration for the Kubernetes cluster
 module "master" {
   source               = "./modules/ec2"
@@ -62,6 +68,7 @@ module "master" {
   pod_cidr            = "192.168.0.0/16"
   key_name = local.key_name
   ssh_private_key_path= local.private_key_path
+  s3_bucket_name     = module.s3.bucket_name
 }
 
 module "workers" {

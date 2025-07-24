@@ -22,6 +22,7 @@ resource "aws_instance" "this" {
   })) : base64encode(templatefile("${path.module}/user_data/worker_join.sh", {
     master_ip = var.master_private_ip
     worker_number = var.worker_number
+    s3_bucket_name  = var.s3_bucket_name
   }))
 
   # Provisionnement supplémentaire pour le master
