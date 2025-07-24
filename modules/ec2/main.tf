@@ -5,10 +5,11 @@ resource "aws_instance" "this" {
   key_name                    = var.key_name
   associate_public_ip_address = true
   vpc_security_group_ids      = var.security_group_ids
+  iam_instance_profile        = var.iam_instance_profile
   
   root_block_device {
     volume_type           = "gp2"
-    volume_size           = "16"
+    volume_size           = "50"
     delete_on_termination = true
   }
 
@@ -27,21 +28,21 @@ resource "aws_instance" "this" {
   }))
 
   # Provisionnement supplémentaire pour le master
-#  provisioner "remote-exec" {
-#    when = create
-#    inline = var.instance_role == "msr" ? [
-#      "cloud-init status --wait",
-#      "chmod +x /tmp/master_init.sh",
-#      "/tmp/master_init.sh"
-#    ] : []
-#    
-#    connection {
-#      type        = "ssh"
-#      user        = "ubuntu"
-#      private_key = file(var.ssh_private_key_path)
-#      host        = self.public_ip
-#    }
-#  }
+ provisioner "remote-exec" {
+   when = create
+   inline = [
+     "cloud-init status --wait",
+    #  "chmod +x /tmp/master_init.sh",
+    #  "/tmp/master_init.sh"
+   ]
+   
+   connection {
+     type        = "ssh"
+     user        = "ubuntu"
+     private_key = file(var.ssh_private_key_path)
+     host        = self.public_ip
+   }
+ }
 }
 
 # Récupération de l'IP privée du master pour les workers
