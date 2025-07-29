@@ -45,6 +45,9 @@ resource "aws_instance" "this" {
  }
 }
 
+
+
+
 # Récupération de l'IP privée du master pour les workers
 data "aws_instance" "master" {
   count = var.instance_role == "wrk" ? 1 : 0
@@ -57,3 +60,30 @@ data "aws_instance" "master" {
 #locals {
 #  join_command = var.instance_role == "msr" ? "" : file("/home/ubuntu/join_command.sh")
 #}
+
+
+resource "null_resource" "remote_exec_master" {
+  count = var.instance_role == "msr" ? 1 : 0
+
+  depends_on = [aws_instance.this]
+
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = file(var.ssh_private_key_path)
+    host        = aws_instance.this.public_ip
+  }
+
+  provisioner "file" {
+    source      = "./scripts/init.sh"
+    destination = "/tmp/init.sh"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "cloud-init status --wait",
+      "chmod +x /tmp/init.sh",
+      "bash /tmp/init.sh"
+    ]
+  }
+}
