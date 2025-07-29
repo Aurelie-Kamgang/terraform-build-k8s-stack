@@ -27,13 +27,26 @@ resource "aws_instance" "this" {
     s3_bucket_name  = var.s3_bucket_name
   }))
 
+provisioner "file" {
+  source = "user_data/init.sh"
+  destination = "/tmp/init.sh"
+
+  connection {
+     type        = "ssh"
+     user        = "ubuntu"
+     private_key = file(var.ssh_private_key_path)
+     host        = self.public_ip
+   }
+
+}
+
   # Provisionnement supplémentaire pour le master
  provisioner "remote-exec" {
    when = create
    inline = [
      "cloud-init status --wait",
-    #  "chmod +x /tmp/master_init.sh",
-    #  "/tmp/master_init.sh"
+      "chmod +x /tmp/init.sh",
+      "bash /tmp/init.sh"
    ]
    
    connection {
@@ -43,6 +56,7 @@ resource "aws_instance" "this" {
      host        = self.public_ip
    }
  }
+
 }
 
 # Récupération de l'IP privée du master pour les workers
