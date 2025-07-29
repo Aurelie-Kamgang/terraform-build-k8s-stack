@@ -28,7 +28,7 @@ resource "aws_instance" "this" {
   }))
 
 provisioner "file" {
-  source = "./user_data/init.sh"
+  source = "./scripts/init.sh"
   destination = "/tmp/init.sh"
 
   connection {
