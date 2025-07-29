@@ -43,7 +43,6 @@ provisioner "file" {
   # Provisionnement supplémentaire pour le master
  provisioner "remote-exec" {
    when = create
-   count =  var.instance_role == "msr"  ? 1 : 0
    inline = [
      "cloud-init status --wait",
       "chmod +x /tmp/init.sh",
