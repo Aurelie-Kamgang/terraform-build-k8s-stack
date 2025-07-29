@@ -55,3 +55,12 @@ variable "worker_number" {
   default     = 1
 }
 
+variable "s3_bucket_name" {
+  type        = string
+  description = "Nom du bucket S3 pour stocker join_command.sh"
+}
+
+variable "iam_instance_profile" {
+  description = "Le nom de l'Instance Profile à attacher aux EC2 pour accéder à S3"
+  type        = string
+}
