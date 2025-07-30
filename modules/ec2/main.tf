@@ -45,8 +45,8 @@ provisioner "file" {
    when = create
    inline = [
      "cloud-init status --wait",
-      "chmod +x /tmp/init.sh",
-      "bash /tmp/init.sh"
+#      "chmod +x /tmp/init.sh",
+#     "bash /tmp/init.sh"
    ]
    
    connection {
